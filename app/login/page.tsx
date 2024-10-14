@@ -19,6 +19,9 @@ export default function LoginPage() {
 
         const data = await authenticateUser(email, password);
 
+        console.log(data);
+        
+
         if (typeof data === 'string' || !data.token) {
             setError('Error al autenticar usuario');
             console.error('Error al autenticar usuario');

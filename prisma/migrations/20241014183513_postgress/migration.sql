@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Alumno" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "nombre" TEXT NOT NULL,
     "nivel" TEXT NOT NULL,
     "grado" TEXT,
@@ -9,16 +9,20 @@ CREATE TABLE "Alumno" (
     "alergias" TEXT,
     "tipo_sangre" TEXT,
     "padre_tutor" TEXT,
-    "ciclo_escolar" TEXT
+    "ciclo_escolar" TEXT,
+
+    CONSTRAINT "Alumno_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

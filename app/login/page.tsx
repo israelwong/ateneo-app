@@ -19,13 +19,16 @@ export default function LoginPage() {
 
         const data = await authenticateUser(email, password);
 
-        if (typeof data === 'object' && 'token' in data) {
-            console.log('Login correcto');
-            Cookies.set('token', data.token);
-            router.push('/dashboard');
-        } else {
-            setError('Credenciales incorrectas');
+        if (!data.token) {
+            setError('Error al autenticar usuario');
+            console.error('Error al autenticar usuario');
+            return;
         }
+        
+        console.log('Login correcto');
+        Cookies.set('token', data.token);
+        router.push('/dashboard');
+
     };
 
     return (

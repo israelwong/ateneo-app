@@ -11,7 +11,8 @@ export default async function authenticateUser(email: string, password: string) 
 
         const res: {
             token: string;
-        } = { token: '' };
+            error: string;
+        } = { token: '', error: '' };
         
         // Busca el usuario en la base de datos
         const user = await prisma.user.findUnique({
@@ -44,11 +45,12 @@ export default async function authenticateUser(email: string, password: string) 
         res.token = token;
         
         // Devuelve el token
-        return res;
-    } catch (error) {
-        console.error(error);
-        return '';
+        return res
+    } catch (error: any) {
+
+        return  error.message; 
+
     }
-    
+
 
 };

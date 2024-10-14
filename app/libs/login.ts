@@ -46,10 +46,12 @@ export default async function authenticateUser(email: string, password: string) 
         
         // Devuelve el token
         return res
-    } catch (error: any) {
-
-        return  error.message; 
-
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return error.message;
+        } else {
+            return 'Error desconocido';
+        }
     }
 
 

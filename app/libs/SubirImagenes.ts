@@ -2,43 +2,40 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
-console.log('supabaseUrl:', supabaseUrl);
-console.log('supabaseKey:', supabaseKey);
-
 if (!supabaseUrl || !supabaseKey) {
     throw new Error('Faltan las variables de entorno SUPABASE_URL o SUPABASE_KEY');
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function subirImagenes(files: File[], nivel: string, grado: string, grupo?: string): Promise<string[]> {
-    const urls: string[] = [];
-
-    for (const file of files) {
-        const filePath = grupo 
-            ? `${nivel}/${grado}/${grupo}/${file.name}` 
-            : `${nivel}/${grado}/${file.name}`;
-        
+export async function subirImagen(file: File, nombre: string) {
+    try {
         const { error } = await supabase.storage
-            .from('ProMedia/ateneo/fotografia/')
-            .upload(filePath, file);
+            .from('ProMedia/ateneo/fotografia')
+            .upload(nombre, file);
 
         if (error) {
-            console.error(`Error subiendo el archivo ${file.name}:`, error.message);
-            throw new Error(`Error subiendo el archivo ${file.name}`);
+            // console.error(`Error subiendo el archivo ${file.name}:`, error.message);
+            return { success: false, message: `Error subiendo el archivo ${file.name}: ${error.message}` };
         }
 
-        const { publicUrl } = supabase.storage
-            .from('ProMedia/ateneo/fotografia/')
-            .getPublicUrl(filePath).data;
+        const { data } = supabase.storage
+            .from('ProMedia/ateneo/fotografia')
+            .getPublicUrl(nombre);
 
-        if (!publicUrl) {
-            console.error(`Error obteniendo la URL pública para ${file.name}`);
-            throw new Error(`Error obteniendo la URL pública para ${file.name}`);
+        if (!data) {
+            // console.error(`Error obteniendo la URL pública del archivo ${file.name}`);
+            return { success: false, message: `Error obteniendo la URL pública del archivo ${file.name}` };
         }
 
-        urls.push(publicUrl);
+        return { success: true, publicUrl: data.publicUrl };
+    } catch (error) {
+        if (error instanceof Error) {
+            // console.error('Error en subirImagen:', error.message);
+            return { success: false, message: `Error en subirImagen: ${error.message}` };
+        } else {
+            // console.error('Error en subirImagen:', error);
+            return { success: false, message: 'Error en subirImagen: Error desconocido' };
+        }
     }
-
-    return urls;
 }

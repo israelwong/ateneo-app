@@ -39,7 +39,7 @@ export default async function authenticateUser(email: string, password: string) 
             },
             secret,
             {
-                expiresIn: '1h'
+                expiresIn: '1d'
             }
         );
         res.token = token;

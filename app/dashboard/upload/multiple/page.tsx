@@ -1,14 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
-import { subirImagenes } from "@/app/libs/SubirImagenes"; // Importar la función de subida
+// import Image from "next/image";
+// import { subirImagenes } from "@/app/libs/SubirImagenes"; // Importar la función de subida
 
 function Page() {
     const [files, setFiles] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
-    const [imageUrls, setImageUrls] = useState<string[]>([]);
+    // const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [nivel, setNivel] = useState("");
     const [grado, setGrado] = useState("");
     const [grupo, setGrupo] = useState("");
@@ -36,8 +36,8 @@ function Page() {
         setSuccess(null);
 
         try {
-            const urls = await subirImagenes(files, nivel, grado, grupo);
-            setImageUrls(urls);
+            // const urls = await subirImagenes(files, nivel, grado, grupo);
+            // setImageUrls(urls);
             setSuccess("Imágenes subidas exitosamente.");
         } catch {
             setError("Error al subir las imágenes.");
@@ -80,7 +80,7 @@ function Page() {
             {uploading && <p>Subiendo imágenes...</p>}
             {error && <p className="py-5" style={{ color: "red" }}>{error}</p>}
             {success && <p className="py-5" style={{ color: "green" }}>{success}</p>}
-            {imageUrls.length > 0 && (
+            {/* {imageUrls.length > 0 && (
                 <div>
                     <h4 className="font-semibold">Imágenes subidas:</h4>
                     <div className="grid grid-cols-3 gap-3">
@@ -97,7 +97,7 @@ function Page() {
                     ))}
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

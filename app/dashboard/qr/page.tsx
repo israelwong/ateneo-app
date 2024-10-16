@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import Papa from 'papaparse';
-import generarYSubirQRs from '@/app/libs/generarYSubirQRs'; // Asegúrate de importar la función correctamente
+// import {generarYSubirQRs} from '@/app/libs/generarYSubirQRs'; // Asegúrate de importar la función correctamente
 
 interface AlumnoProps {
     nombre: string;
@@ -46,12 +46,12 @@ function Page() {
         setStatusList([]);
         setTotalGenerados(0);
         try {
-            const qrCodes = await generarYSubirQRs(alumnos, (status: string) => {
-                setStatusList(prevStatusList => [...prevStatusList, status]);
-                setTotalGenerados(prevTotal => prevTotal + 1);
-            });
-            console.log('QRs generados:', qrCodes);
-            setMessage(`Total QRs generados: ${qrCodes.length}`);
+            // const qrCodes = await generarYSubirQRs(alumnos, (status: string) => {
+            //     setStatusList(prevStatusList => [...prevStatusList, status]);
+            //     setTotalGenerados(prevTotal => prevTotal + 1);
+            // });
+            // console.log('QRs generados:', qrCodes);
+            // setMessage(`Total QRs generados: ${qrCodes.length}`);
         } catch (error) {
             console.error('Error al generar los QRs:', error);
             setError('Error al generar los QRs.');

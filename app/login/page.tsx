@@ -19,7 +19,7 @@ export default function LoginPage() {
 
         const data = await authenticateUser(email, password);
 
-        console.log(data);
+        // console.log(data);
         
 
         if (typeof data === 'string' || !data.token) {

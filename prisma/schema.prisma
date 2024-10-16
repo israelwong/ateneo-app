@@ -9,15 +9,24 @@ datasource db {
 
 model Alumno {
   id    Int     @id @default(autoincrement())
+  matricula String @unique
   nombre  String @unique
   nivel String 
   grado String?
   grupo String?
-  matricula String @unique
-  alergias String?
+  alergia String?
   tipo_sangre String?
-  padre_tutor String?
-  ciclo_escolar String?
+  mama String?
+  papa String?
+  autorizado_1 String?
+  autorizado_2 String?
+  autorizado_3 String?
+  ciclo_escolar String? @default("2024-2025")
+  url_image String?
+  qr String?
+  fecha_registro DateTime @default(now())
+  fecha_actualiziacion DateTime?
+  estatus String @default("Activo")
 }
 
 model User {

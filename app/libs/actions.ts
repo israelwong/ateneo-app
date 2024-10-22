@@ -1,6 +1,7 @@
 "use server";
 import prisma from "@/app/libs/prisma";
 
+// ALUMNOS
 interface AlumnoProps {
     id?: number;
     matricula: string;
@@ -24,7 +25,7 @@ interface AlumnoProps {
 export async function obtenerAlumno(nombre: string) {
     return await prisma.alumno.findFirst({
         where: {
-            nombre
+            matricula: nombre,
         }
     });
 }
@@ -55,8 +56,6 @@ export async function crearAlumno(alumno: AlumnoProps) {
                 autorizado_2: alumno.autorizado_2?.trim(),
                 autorizado_3: alumno.autorizado_3?.trim(),
                 ciclo_escolar: alumno.ciclo_escolar?.trim(),
-                url_image: alumno.url_image?.trim(),
-                qr: alumno.qr?.trim(),
             },
         });
         response = {
@@ -89,12 +88,17 @@ export async function obtenerAlumnoPorId(id: number) {
     });
 }
 
-export async function eliminarAlumno(id: number) {
-    return await prisma.alumno.delete({
-        where: {
-            id,
-        },
-    });
+export const eliminarAlumno = async (id: number): Promise<{ success: boolean, message?: string }> => {
+    try {
+        await prisma.alumno.delete({
+            where: {
+                id,
+            },
+        });
+        return { success: true };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
+    }
 }
 
 export async function actualizarAlumno(id: number, alumno: AlumnoProps) {
@@ -137,41 +141,83 @@ export async function actualizarAlumno(id: number, alumno: AlumnoProps) {
     return result;
 }
 
-export async function depurarEspaciosEnBlanco() {
+
+
+export async function obtenerAlumnosPendientes(filtro:'' | 'qr' | 'url_image') {
+    let whereClause;
+
+    if (filtro === 'qr') {
+        whereClause = {
+            OR: [
+                { qr: null },
+                { qr: '' }
+            ]
+        };
+    } else if (filtro === 'url_image') {
+        whereClause = {
+            OR: [
+                { url_image: null },
+                { url_image: '' }
+            ]
+        };
+    } else {
+        whereClause = {
+            OR: [
+                { qr: null },
+                { qr: '' },
+                { url_image: null },
+                { url_image: '' }
+            ]
+        };
+    }
+
+    return await prisma.alumno.findMany({
+        where: whereClause
+    });
+}
+
+export async function limpiarRegistros() {
     const alumnos = await prisma.alumno.findMany();
 
-    function eliminarEspaciosDuplicados(texto: string): string {
-        return texto.replace(/\s+/g, ' ');
+    function eliminarEspacios(texto: string): string {
+        return texto.trim();
+    }
+
+    function eliminarCaracteresEspeciales(texto: string): string {
+        return texto.replace(/[-_]/g, '');
+    }
+
+    function limpiarGrado(grado: string | null): string | null {
+        if (grado === null) return null;
+        grado = eliminarEspacios(grado);
+        grado = eliminarCaracteresEspeciales(grado);
+        return grado.length > 1 ? grado.charAt(0) : grado;
     }
 
     for (const alumno of alumnos) {
-        let grado = alumno.grado?.trim();
-        if (grado && grado.length === 2) {
-            grado = grado.charAt(0);
-        }
-
         await prisma.alumno.update({
             where: {
                 id: alumno.id,
             },
             data: {
-                matricula: eliminarEspaciosDuplicados(alumno.matricula.trim()),
-                nombre: eliminarEspaciosDuplicados(alumno.nombre.trim()),
-                nivel: eliminarEspaciosDuplicados(alumno.nivel.trim()),
-                grado: grado,
-                grupo: eliminarEspaciosDuplicados(alumno.grupo?.trim() || ''),
-                alergia: eliminarEspaciosDuplicados(alumno.alergia?.trim() || ''),
-                tipo_sangre: eliminarEspaciosDuplicados(alumno.tipo_sangre?.trim() || ''),
-                mama: eliminarEspaciosDuplicados(alumno.mama?.trim() || ''),
-                papa: eliminarEspaciosDuplicados(alumno.papa?.trim() || ''),
-                autorizado_1: eliminarEspaciosDuplicados(alumno.autorizado_1?.trim() || ''),
-                autorizado_2: eliminarEspaciosDuplicados(alumno.autorizado_2?.trim() || ''),
-                autorizado_3: eliminarEspaciosDuplicados(alumno.autorizado_3?.trim() || ''),
-                ciclo_escolar: eliminarEspaciosDuplicados(alumno.ciclo_escolar?.trim() || ''),
-                url_image: eliminarEspaciosDuplicados(alumno.url_image?.trim() || ''),
-                qr: eliminarEspaciosDuplicados(alumno.qr?.trim() || ''),
+                matricula: eliminarEspacios(alumno.matricula),
+                nombre: eliminarEspacios(alumno.nombre),
+                nivel: eliminarEspacios(alumno.nivel),
+                grado: limpiarGrado(alumno.grado),
+                grupo: eliminarEspacios(eliminarCaracteresEspeciales(alumno.grupo || '')),
+                alergia: eliminarEspacios(alumno.alergia || ''),
+                tipo_sangre: eliminarEspacios(alumno.tipo_sangre || ''),
+                mama: eliminarEspacios(alumno.mama || ''),
+                papa: eliminarEspacios(alumno.papa || ''),
+                autorizado_1: eliminarEspacios(alumno.autorizado_1 || ''),
+                autorizado_2: eliminarEspacios(alumno.autorizado_2 || ''),
+                autorizado_3: eliminarEspacios(alumno.autorizado_3 || ''),
+                ciclo_escolar: eliminarEspacios(alumno.ciclo_escolar || ''),
+                url_image: eliminarEspacios(alumno.url_image || ''),
+                qr: eliminarEspacios(alumno.qr || ''),
             },
         });
     }
-    return 'Espacios en blanco y duplicados eliminados, y grado ajustado';
+
+    return 'Espacios en blanco eliminados, caracteres especiales eliminados, y grado ajustado';
 }

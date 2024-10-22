@@ -2,6 +2,12 @@ import React from 'react';
 import { obtenerAlumno } from '@/app/libs/actions';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Ficha de alumno',
+    description: 'Ficha de alumno',
+};
 
 interface PageProps {
     params: {
@@ -13,7 +19,6 @@ async function Page({ params }: PageProps) {
     const { alumno } = params;
     const nombre_url = decodeURIComponent(alumno).toUpperCase();
     const ficha = await obtenerAlumno(nombre_url);
-    console.log(ficha);
 
     return (
         <>
@@ -41,8 +46,8 @@ async function Page({ params }: PageProps) {
                             src={ficha.url_image || ''}
                             alt="Avatar"
                             width={200}
-                            height={200}
-                            className="rounded-full object-cover h-60 w-60 object-middle border-8 border-gray-200 mx-auto drop-shadow-lg"
+                            height={400}
+                            className="rounded-full object-cover h-90 w-60 object-middle border-8 border-gray-200 mx-auto drop-shadow-lg"
                         />
 
                         <h3 className="text-center text-3xl font-bold px-16 mt-2 mb-3 text-pink-900">

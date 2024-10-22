@@ -15,7 +15,7 @@ export default async function verifyToken(token: string) {
 
   try {
     const { payload } = await jwtVerify(token, encodedSecret);
-    console.log('Usuario autenticado:', payload);
+    // console.log('Usuario autenticado:', payload);
     return payload; // Devuelve el payload si la verificación es exitosa
   } catch (error) {
     console.error('Error al verificar el token:', error);

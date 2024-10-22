@@ -52,6 +52,7 @@ function Page() {
     const router = useRouter();
 
     useEffect(() => {
+
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
         console.log('user', user);
         setUser(user);
@@ -431,7 +432,6 @@ function Page() {
                     <table className="w-full border-collapse table-auto">
                         <thead>
                             <tr>
-                                {/* <th className="border p-2">#</th> */}
                                 <th className="border p-2">ID</th>
                                 <th className="border p-2">Nombre</th>
                                 <th className="border p-2">Teléfono</th>
@@ -446,9 +446,8 @@ function Page() {
                             </tr>
                         </thead>
                         <tbody>
-                            {empleadosFiltrados.map((empleado, index) => (
+                            {empleadosFiltrados.map((empleado) => (
                                 <tr key={empleado.id}>
-                                    {/* <td className="border p-2">{index + 1}</td> */}
                                     <td className="border p-2">{empleado.id}</td>
                                     <td className="border p-2">{empleado.nombre}</td>
                                     <td className="border p-2">{empleado.telefono || "N/A"}</td>

@@ -17,8 +17,8 @@ interface PageProps {
 
 async function Page({ params }: PageProps) {
     const { nombre } = params;
-    const nombre_url = decodeURIComponent(nombre);
-    const ficha = await obtenerEmpleado(nombre_url);
+    const nombre_url = nombre;
+    const ficha = await obtenerEmpleado(parseInt(nombre_url));
 
     return (
         <>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { actualizarEmpleado, obtenerEmpleados } from '@/app/libs/empleados'
 import BtnGenerarQrEmpleado from './BtnGenerarQrEmpleado'
 import BtnSubirFotoEmpleado from './BtnSubirFotoEmpleado'
-import { generarQr } from '../libs/QREmpleado'
+import { generarQr, eliminarQr } from '../libs/QREmpleado'
 import { subirImagen } from '../libs/GestionarImagenes'
 
 interface EmpleadoProps {
@@ -25,7 +25,6 @@ interface EmpleadoProps {
 }
 
 interface UserProps {
-    name?: string;
     email: string;
 }
 
@@ -44,6 +43,7 @@ function Page() {
     const [filtroConImagen, setFiltroConImagen] = useState<boolean>(false);
 
     const [generandoQrs, setGenerandoQrs] = useState<boolean>(false);
+    const [eliminandoQRs, setEliminandoQRs] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [copiando, setCopiando] = useState<boolean>(false);
 
@@ -52,7 +52,8 @@ function Page() {
     const router = useRouter();
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+        console.log('user', user);
         setUser(user);
         fetchEmpleados();
     }, []);
@@ -232,19 +233,42 @@ function Page() {
     const exportarCSV = () => {
         const nombreArchivo = generarNombreArchivo();
 
-        const csv = empleadosFiltrados.map(empleado => {
-            return [
-                empleado.id,
-                empleado.nombre,
-                empleado.telefono || 'N/A',
-                empleado.area || 'N/A',
-                empleado.puesto || 'N/A',
-                empleado.contacto_emergencia || 'N/A',
-                empleado.tipo_sangre || 'N/A',
-                empleado.qr || 'N/A',
-                empleado.url_image || 'N/A'
-            ].join(',');
-        }).join('\n');
+        const columnas = [
+            'id',
+            'nombre',
+            'telefono',
+            'area',
+            'puesto',
+            'contacto_emergencia',
+            'tipo_sangre',
+            '@qr',
+            '@url_image'
+        ];
+
+        // Reemplazar espacios con guiones bajos en los nombres de las columnas
+        const encabezados = columnas.map(columna => columna.replace(/\s+/g, '_')).join(',');
+
+        const csv = [
+            encabezados,
+            ...empleadosFiltrados.map(empleado => {
+
+                const rutaImagen_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Empleado/Fotografia/${empleado.id}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/Fotografia/
+                const rutaQR_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Empleado/QR/${empleado.id}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/QR/
+
+                return [
+                    empleado.id,
+                    empleado.nombre,
+                    empleado.telefono || 'N/A',
+                    empleado.area || 'N/A',
+                    empleado.puesto || 'N/A',
+                    empleado.contacto_emergencia || 'N/A',
+                    empleado.tipo_sangre || 'N/A',
+                    rutaQR_local || 'N/A',
+                    rutaImagen_local || 'N/A',
+                ].join(',');
+            })
+        ].join('\n');
+
 
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
@@ -253,6 +277,21 @@ function Page() {
         a.download = `${nombreArchivo}.csv`;
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    const eliminarQrMasivos = async () => {
+        const result = confirm('¿Estás seguro de que deseas eliminar todos los QRs?');
+        if (!result) return;
+
+        setEliminandoQRs(true);
+        for (const empleado of empleados) {
+            if (empleado.qr) {
+                await eliminarQr(empleado);
+                await actualizarEmpleado(empleado.id, { ...empleado, qr: null });
+                fetchEmpleados();
+            }
+        }
+        setEliminandoQRs(false);
     }
 
 
@@ -295,9 +334,11 @@ function Page() {
                                 {copiando ? 'Copiando datos...' : 'Copiar datos en portapapeles'}
                             </button>
 
-                            <Link href="/dashboard/csv/empleados" className="bg-gray-600 text-white p-2 rounded-md w-full block text-center">
-                                Registro masivo CSV
-                            </Link>
+                            <button className="bg-gray-600 text-white p-2 rounded-md  text-center"
+                                onClick={() => eliminarQrMasivos()}
+                            >
+                                {eliminandoQRs ? 'Eliminando QRs...' : 'Eliminar QRs Masivos'}
+                            </button>
 
                         </div>
                     )}
@@ -306,10 +347,6 @@ function Page() {
 
                     {/* FILTRO EMPLEADOS  */}
                     <div className='space-x-2 items-center my-10 flex'>
-
-
-
-
                         <button
                             className={`flex-grow ${areaSeleccionada === null ? 'bg-yellow-500' : 'bg-blue-500'} hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
                             onClick={() => setAreaSeleccionada(null)}
@@ -394,7 +431,7 @@ function Page() {
                     <table className="w-full border-collapse table-auto">
                         <thead>
                             <tr>
-                                <th className="border p-2">#</th>
+                                {/* <th className="border p-2">#</th> */}
                                 <th className="border p-2">ID</th>
                                 <th className="border p-2">Nombre</th>
                                 <th className="border p-2">Teléfono</th>
@@ -411,7 +448,7 @@ function Page() {
                         <tbody>
                             {empleadosFiltrados.map((empleado, index) => (
                                 <tr key={empleado.id}>
-                                    <td className="border p-2">{index + 1}</td>
+                                    {/* <td className="border p-2">{index + 1}</td> */}
                                     <td className="border p-2">{empleado.id}</td>
                                     <td className="border p-2">{empleado.nombre}</td>
                                     <td className="border p-2">{empleado.telefono || "N/A"}</td>
@@ -421,15 +458,16 @@ function Page() {
                                     <td className="border p-2">{empleado.contacto_emergencia || "N/A"}</td>
                                     <td className="border p-2">{empleado.tipo_sangre || "N/A"}</td>
                                     <td className="border p-2">
-                                        <div className='text-sm flex'>
+                                        <div className='text-sm space-y-3 text-center items-center justify-center'>
                                             <button
-                                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
+                                                className="bg-yellow-500 text-white font-bold py-1 px-2 rounded block w-full h-14"
                                                 onClick={() => handleEdit(empleado.id)}
                                             >
-                                                Editar
+                                                Editar empleado
                                             </button>
-                                            <Link href={`/empleado/${empleado.nombre}`} target='_blank' className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded ml-2">
-                                                Ficha
+                                            <Link href={`/empleado/${empleado.id}`} target='_blank' 
+                                                className="bg-black text-white font-bold py-1 px-2 rounded  w-full h-10 flex items-center justify-center">
+                                                Ficha digital
                                             </Link>
                                         </div>
                                     </td>

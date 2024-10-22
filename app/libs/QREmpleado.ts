@@ -40,7 +40,7 @@ export async function generarQr(empleado: Empleado) {
         url_svg: ''
     }
 
-    const url = `https://ateneo-app.vercel.app/empleado/${empleado.nombre}`;
+    const url = `https://ateneo-app.vercel.app/empleado/${empleado.id}`;
     const qrSvg = await QRCode.toString(url, { type: 'svg' });
     const width = 1200; // Ancho deseado
     const height = 1200; // Alto deseado
@@ -50,7 +50,7 @@ export async function generarQr(empleado: Empleado) {
         .resize(width, height)
         .jpeg()
         .toBuffer();
-    const fileName = `/Empleado/QR/${empleado.id}.jpg`;
+    const fileName = `Empleado/QR/${empleado.id}.jpg`;
     const url_svg = `https://sfsjdyuwttrcgchbsxim.supabase.co/storage/v1/object/public/Ateneo/${fileName}`;
 
     // Eliminar el archivo existente si ya está presente
@@ -83,7 +83,7 @@ export async function generarQr(empleado: Empleado) {
 }
 
 export async function eliminarQr(empleado: Empleado) {
-    const fileName = `/Empleado/QR/${empleado.id}.jpg`;
+    const fileName = `Empleado/QR/${empleado.id}.jpg`;
 
     const { data, error: deleteError } = await supabase.storage
     .from('Ateneo')

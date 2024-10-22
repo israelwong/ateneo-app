@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { crearEmpleado } from '@/app/libs/empleados';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Empleado {
     nombre: string;
@@ -16,8 +17,10 @@ interface Empleado {
 
 function FormCrearEmpleado() {
     const [errores, setErrores] = useState<{ [key: string]: string }>({});
+    const [guardando, setGuardando] = useState(false);
+    const router = useRouter();
 
-    function manejarEnvioFormulario(event: React.FormEvent<HTMLFormElement>) {
+    async function manejarEnvioFormulario(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         // Capturar los datos del formulario
@@ -29,6 +32,7 @@ function FormCrearEmpleado() {
         const puesto = (form.puesto as unknown as HTMLInputElement).value;
         const contacto_emergencia = (form.contacto_emergencia as unknown as HTMLInputElement).value || null;
         const tipo_sangre = (form.tipo_sangre as unknown as HTMLInputElement).value || null;
+
 
         // Validaciones adicionales
         const nuevosErrores: { [key: string]: string } = {};
@@ -62,7 +66,9 @@ function FormCrearEmpleado() {
         };
 
         // Llamar a la función crearEmpleado
-        crearEmpleado(nuevoEmpleado);
+        setGuardando(true);
+        await crearEmpleado(nuevoEmpleado);
+        router.push('/dashboard/empleados');
     }
 
     return (
@@ -70,7 +76,7 @@ function FormCrearEmpleado() {
 
             <div>
                 <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                <input type="text" id="nombre" name="nombre" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                 {errores.nombre && <p className="mt-1 text-sm text-red-600">{errores.nombre}</p>}
             </div>
 
@@ -86,13 +92,13 @@ function FormCrearEmpleado() {
 
             <div>
                 <label htmlFor="area" className="block text-sm font-medium text-gray-700">Área:</label>
-                <input type="text" id="area" name="area" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                <input type="text" id="area" name="area" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                 {errores.area && <p className="mt-1 text-sm text-red-600">{errores.area}</p>}
             </div>
 
             <div>
                 <label htmlFor="puesto" className="block text-sm font-medium text-gray-700">Puesto:</label>
-                <input type="text" id="puesto" name="puesto" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                <input type="text" id="puesto" name="puesto" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                 {errores.puesto && <p className="mt-1 text-sm text-red-600">{errores.puesto}</p>}
             </div>
 
@@ -106,16 +112,21 @@ function FormCrearEmpleado() {
                 <input type="text" id="tipo_sangre" name="tipo_sangre" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
 
-            <div className=''>
-                <button 
-                type="submit"
-                className="flex-grow py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Crear Empleado</button>
-                
-                <Link 
-                className="flex-grow py-2 px-4 bg-red-600 text-white font-semibold rounded-md shadow-sm" 
-                href="empleados">
+            <div className='space-y-4'>
+                <button
+                    type="submit"
+                    className={`w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 block
+                    ${guardando ? 'cursor-not-allowed opacity-50' : ''}`}
+                    disabled={guardando}
+                >
+                    {guardando ? 'Guardando...' : 'Crear Empleado'}
+                </button>
+
+                <Link
+                    className="w-full py-2 px-4 bg-red-600 text-white font-semibold rounded-md shadow-sm block text-center"
+                    href="empleados">
                     Cancelar
-                    </Link>
+                </Link>
             </div>
         </form>
     );

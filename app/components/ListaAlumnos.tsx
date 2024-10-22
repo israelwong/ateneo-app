@@ -29,7 +29,6 @@ interface AlumnoProps {
 }
 
 interface UserProps {
-    name?: string;
     email: string;
 }
 
@@ -282,8 +281,8 @@ function Page() {
             encabezados,
             ...alumnosFiltrados.map(alumno => {
                 // Asignar las rutas obtenidas a alumno.qr y alumno.url_image
-                const rutaImagen_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Fotografia/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/Fotografia/
-                const rutaQR_local = `/Users/israelwong/Desktop/Ateneo/Recursos/QR/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/QR/
+                const rutaImagen_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Alumno/Fotografia/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/Fotografia/
+                const rutaQR_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Alumno/QR/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/QR/
 
                 const autorizados = [
                     alumno.mama,

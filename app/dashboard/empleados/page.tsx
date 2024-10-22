@@ -4,7 +4,7 @@ import NavbarEmpleados from '@/app/components/NavbarEmpleados'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Empleados',
+  title: 'Empleados registrados',
   description: 'Página para gestionar empleados',
 }
 

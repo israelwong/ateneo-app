@@ -21,10 +21,10 @@ function limpiarTexto(texto: string | null | undefined): string {
 }
 
 
-export async function obtenerEmpleado(nombre: string) {
+export async function obtenerEmpleado(id: number) {
     return await prisma.empleado.findFirst({
         where: {
-            nombre
+            id: Number(id)
         }
     });
 }
@@ -74,7 +74,7 @@ export async function obtenerEmpleados() {
     });
 }
 
-export async function actualizarEmpleado(id:number, empleado: EmpleadoProps) {
+export async function actualizarEmpleado(id: number, empleado: EmpleadoProps) {
     let response: {
         success: boolean;
         error?: string;
@@ -112,10 +112,15 @@ export async function actualizarEmpleado(id:number, empleado: EmpleadoProps) {
 }
 
 export async function eliminarEmpleado(id: number) {
-    return await prisma.empleado.delete({
-        where: {
-            id,
-        },
-    });
+    try {
+        await prisma.empleado.delete({
+            where: {
+                id,
+            },
+        });
+        return { success: true, message: 'Empleado eliminado exitosamente' };
+    } catch (error) {
+        return { success: false, message: 'Error al eliminar el empleado', error };
+    }
 }
 

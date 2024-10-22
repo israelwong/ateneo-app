@@ -20,7 +20,7 @@ interface Empleado {
 }
 
 interface BtnSubirFotoEmpleadoProps {
-    empleado: Empleado | undefined;
+    empleado: Empleado | undefined | null;
     onImageUploaded: () => void;
 }
 
@@ -111,11 +111,13 @@ const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ empleado, o
                     <Image
                         src={imageUrl}
                         alt={empleado?.nombre ?? 'Empleado'}
-                        width={100}
-                        height={100}
+                        width={200}
+                        height={400}
+                        style={{ width: 'auto', height: 'auto' }}
+                        className='rounded-full'
                     />
                     <button onClick={() => handleEliminarImagen(empleado?.id?.toString() ?? '')} disabled={uploading} className='underline text-red-600'>
-                        {uploading ? 'Eliminando...' : 'Eliminar Imagen'}
+                        {uploading ? 'Eliminando...' : 'Eliminar'}
                     </button>
                 </div>
             ) : (

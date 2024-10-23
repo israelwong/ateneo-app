@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 function Page() {
 
   return (
-    <div className="mx-auto max-w-full">
+    <div className="mx-auto w-screen">
       <NavbarAlumnos />
       <ListaAlumnos />
     </div>

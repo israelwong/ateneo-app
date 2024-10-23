@@ -112,13 +112,13 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
         <div>
             {imageUrl && !imageDeleted ? (
                 <div id='imagen'>
-                    <div className='flex flex-col items-center'>
+                    <div className='flex flex-col items-center border p-2'>
                         <Image
                             src={imageUrl}
                             alt={alumno?.nombre ?? 'Alumno'}
-                            width={300}
-                            height={300}
-                            className='rounded-full object-cover mb-4'
+                            width={200}
+                            height={200}
+                            className='object-cover mb-2'
                         />
                         <button
                             onClick={() => alumno && handleEliminarImagen(alumno.matricula ?? 0)}

@@ -7,6 +7,7 @@ import BtnSubirFotoAlumno from './BtnSubirFotoAlumno'
 import { generarQr, eliminarQr } from '../libs/QRAlumno'
 import { subirImagen } from '../libs/GestionarImagenes'
 import BtnEstatusAlumno from './BtnEstatusAlumno'
+// import { ImagenResponsables } from '../libs/ImagenResponsables'
 
 
 interface AlumnoProps {
@@ -339,14 +340,14 @@ function Page() {
     // }
 
     return (
-        <div className="mx-auto py-10 p-5 w-screen">
+        <div className="mx-auto py-10 max-w-full p-5">
             {loading ? (
                 <div className="text-center text-xl">Cargando datos...</div>
             ) : (
                 <>
                     {user?.email === 'ing.israel.wong@gmail.com' && (
                         // Acciones masivas:
-                        <div className='space-x-2 items-center flex flex-wrap space-y-2'>
+                        <div className='space-x-2 items-center flex'>
 
                             {/* <button onClick={() => generarImagenResponsables()}>
                                 Generar imagen responsables
@@ -413,9 +414,9 @@ function Page() {
                         </div>
                     )}
 
-                    <div className='flex flex-wrap items-center py-5 gap-5'>
+                    <div className='space-x-2 items-center py-5 flex'>
                         <button
-                            className={`flex-grow ${nivelSeleccionado === null ? 'bg-yellow-500' : 'bg-blue-500'} hover:bg-blue-700 text-white font-bold py-2 px-3 rounded`}
+                            className={`flex-grow ${nivelSeleccionado === null ? 'bg-yellow-500' : 'bg-blue-500'} hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
                             onClick={() => setNivelSeleccionado(null)}
                         >
                             TODOS ({alumnos.length})
@@ -423,14 +424,14 @@ function Page() {
                         {niveles.map(nivel => (
                             <button
                                 key={nivel}
-                                className={`flex-grow ${nivelSeleccionado === nivel ? 'bg-yellow-500' : 'bg-green-500'} hover:bg-green-700 text-white font-bold py-2 px-3 rounded`}
+                                className={`flex-grow ${nivelSeleccionado === nivel ? 'bg-yellow-500' : 'bg-green-500'} hover:bg-green-700 text-white font-bold py-2 px-4 rounded`}
                                 onClick={() => setNivelSeleccionado(nivel)}
                             >
                                 {nivel} ({contarAlumnosPorNivel(nivel)})
                             </button>
                         ))}
 
-                        <div className="flex flex-wrap items-center space-x-4 mt-4 w-full">
+                        <div className="flex items-center space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input
                                     type="checkbox"
@@ -458,8 +459,10 @@ function Page() {
                                 />
                                 <span className="text-gray-800 font-bold">QR Pendiente</span>
                             </label>
+
                         </div>
                     </div>
+
                     <div>
                         {hayFiltrosAplicados() && (
                             <div className="text-center text-xl pb-5">
@@ -491,71 +494,85 @@ function Page() {
                         />
                     </div>
 
-                    <div>
-                    </div>
+                    <table className="w-full border-collapse table-auto">
+                        <thead>
+                            <tr>
+                                <th className="border p-2 flex-grow">#</th>
+                                <th className="border p-2">Matrícula</th>
+                                <th className="border p-2">Nombre</th>
+                                <th className="border p-2">Nivel</th>
+                                <th className="border p-2">Grado</th>
+                                <th className="border p-2">Grupo</th>
+                                <th className="border p-2">Ciclo</th>
+                                <th className="border p-2">Alergia</th>
+                                <th className="border p-2">Tipo de Sangre</th>
+                                <th className="border p-2">Mamá</th>
+                                <th className="border p-2">Papá</th>
+                                <th className="border p-2">Autorizado 1</th>
+                                <th className="border p-2">Autorizado 2</th>
+                                <th className="border p-2">Autorizado 3</th>
+                                <th className="border p-2">Acciones</th>
+                                <th className="border p-2">QR</th>
+                                <th className="border p-2">Foto</th>
+                                <th className="border p-2">Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {alumnosFiltrados.map((alumno, index) => (
+                                <tr key={alumno.id} className=''>
+                                    <td className="border p-2">{index + 1}</td>
+                                    <td className="border p-2">{alumno.matricula}</td>
+                                    <td className="border p-2">{alumno.nombre}</td>
+                                    <td className="border p-2">{alumno.nivel}</td>
+                                    <td className="border p-2">{alumno.grado || "N/A"}</td>
+                                    <td className="border p-2">{alumno.grupo || "N/A"}</td>
+                                    <td className="border p-2">{alumno.ciclo_escolar || "N/A"}</td>
+                                    <td className="border p-2">{alumno.alergia || "N/A"}</td>
+                                    <td className="border p-2">{alumno.tipo_sangre || "N/A"}</td>
+                                    <td className="border p-2">{alumno.mama || "N/A"}</td>
+                                    <td className="border p-2">{alumno.papa || "N/A"}</td>
+                                    <td className="border p-2">{alumno.autorizado_1 || "N/A"}</td>
+                                    <td className="border p-2">{alumno.autorizado_2 || "N/A"}</td>
+                                    <td className="border p-2">{alumno.autorizado_3 || "N/A"}</td>
+                                    <td className="border p-2">
+                                        <div className='text-sm space-y-2'>
 
-                    <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4'>
-
-                        {alumnosFiltrados.map((alumno, index) => (
-                            <div id={`fecha_${index}`} key={index} className='border gap-6 p-5 rounded-md bg-gray-50'>
-
-                                <div className='grid grid-cols-2 gap-2 mb-4'>
-                                    <div className='text-2xl font-semibold'>{alumno.matricula}</div>
-                                    <div className='flex space-x-2'>
-                                        <Link href={`/dashboard/alumno/${alumno.id}`} className='bg-blue-500 text-white font-bold py-1 px-2 rounded block'>
-                                            Editar
-                                        </Link>
-                                        <BtnEstatusAlumno
-                                            alumno={alumno}
-                                            onStatusUpdated={fetchAlumnos}
-                                        />
-
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-3 gap-2'>
-
-                                    <div className='col-span-2'>
-                                        <ul>
-                                            <li className="border p-1"><b>Alumno:</b> {alumno.nombre}</li>
-                                            <li className="border p-1"><b>Nivel:</b> {alumno.nivel}</li>
-                                            <li className="border p-1"><b>Grado:</b> {alumno.grado || "N/A"}</li>
-                                            <li className="border p-1"><b>Grupo:</b> {alumno.grupo || "N/A"}</li>
-                                            <li className="border p-1"><b>Ciclo </b>escolar: {alumno.ciclo_escolar || "N/A"}</li>
-                                            <li className="border p-1"><b>Tipo </b>de Sangre: {alumno.tipo_sangre || "N/A"}</li>
-                                            <li className="border p-1"><b>Alergias:</b> {alumno.alergia || "N/A"}</li>
-                                            <li className="border p-1"><b>Mamá:</b> {alumno.mama || "N/A"}</li>
-                                            <li className="border p-1"><b>Papá:</b> {alumno.papa || "N/A"}</li>
-                                            <li className="border p-1"><b>Autorizado:</b> {alumno.autorizado_1 || "N/A"}</li>
-                                            <li className="border p-1"><b>Autorizado:</b> {alumno.autorizado_2 || "N/A"}</li>
-                                            <li className="border p-1"><b>Autorizado:</b> {alumno.autorizado_3 || "N/A"}</li>
-                                        </ul>
-
-                                    </div>
-
-                                    <div className='flex flex-col items-center'>
-                                        <BtnSubirFotoAlumno
-                                            alumno={alumno}
-                                            onImageUploaded={handleImageUploaded}
-                                        />
+                                            <Link href={`/dashboard/alumno/${alumno.id}`} className='bg-blue-500 text-white font-bold py-1 px-2 rounded ml-2 block'>
+                                                Editar alumno
+                                            </Link>
+                                            <Link href={`/${alumno.matricula}`} target='_blank' className="bg-black text-white font-bold py-1 px-2 rounded ml-2 block">
+                                                Ficha digital
+                                            </Link>
+                                        </div>
+                                    </td>
+                                    <td className="border p-2">
                                         <BtnGenerarQrAlumno
                                             alumno={alumno}
                                             onQrGenerated={handleQrGenerated}
                                         />
-                                        <Link href={`/${alumno.matricula}`} target='_blank' className="
-                                        bg-black text-white font-bold p-5 rounded block mt-2 text-center
-                                        ">
-                                            Ficha digital
-                                        </Link>
-                                    </div>
+                                    </td>
+                                    <td className='border p-2'>
+                                        <BtnSubirFotoAlumno
+                                            alumno={alumno}
+                                            onImageUploaded={handleImageUploaded}
+                                        />
+                                    </td>
 
-
-                                </div>
-
-
-                            </div>
-                        ))}
-
-                    </div>
+                                    <td className='items-center justify-center p-2 border'>
+                                        <BtnEstatusAlumno
+                                            alumno={alumno}
+                                            onStatusUpdated={fetchAlumnos}
+                                        />
+                                    </td>
+                                    {/* <td className='items-center justify-center p-2 border'>
+                                        <button onClick={() => generarImagenResponsables(alumno)}>
+                                            Generar imagen responsables
+                                        </button>
+                                    </td> */}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </>
             )}
         </div>

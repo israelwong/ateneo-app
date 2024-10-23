@@ -72,19 +72,19 @@ const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrG
     };
 
     return (
-        <div className="text-center">
+        <div className="text-center border p-2">
             { qrAvailable && alumno?.qr ? (
-                <div className="mb-4">
+                <div className="mb-2">
                     <Image
                         src={alumno.qr}
                         alt={`QR Code for ${alumno.nombre}`}
-                        width={100}
-                        height={100}
+                        width={200}
+                        height={200}
                         className="mx-auto"
                     />
                     <button
                         onClick={() => handleEliminarQR(alumno.id)}
-                        className="text-center text-red-800 mt-2"
+                        className="text-center text-red-500"
                         disabled={eliminandoQR}
                     >
                         {eliminandoQR ? 'Eliminando...' : 'Eliminar'}

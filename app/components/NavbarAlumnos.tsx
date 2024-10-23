@@ -4,7 +4,7 @@ import Link from 'next/link'
 function NavbarAlumnos() {
 
     return (
-        <div>
+        <div className='w-screen'>
 
             <div className='grid grid-cols-2 bg-gray-100 p-5'>
 

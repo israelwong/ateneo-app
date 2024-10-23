@@ -44,10 +44,10 @@ function BtnEstatusAlumno({ alumno, onStatusUpdated }: BtnGenerarQrAlumnoProps) 
     };
 
     return (
-        <div>
+        <div className='w-full'>
             <button
                 onClick={() => alumno && toggleEstatus(alumno)}
-                className={`px-2 py-1 rounded ${alumno && alumno.estatus === 'activo' ? 'bg-green-500' : 'bg-red-500'} text-white`}
+                className={`w-full px-2 py-1 ${alumno && alumno.estatus === 'activo' ? 'bg-green-500' : 'bg-red-500'} text-white rounded-md`}
             >
                 {activando ? 'Cambiando' : alumno && alumno.estatus === 'activo' ? 'Activo' : 'Inactivo'}
             </button>

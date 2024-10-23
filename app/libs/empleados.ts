@@ -13,6 +13,7 @@ interface EmpleadoProps {
     tipo_sangre: string | null;
     url_image?: string | null;
     qr?: string | null;
+    estatus?: string;
 }
 
 function limpiarTexto(texto: string | null | undefined): string {
@@ -100,6 +101,7 @@ export async function actualizarEmpleado(id: number, empleado: EmpleadoProps) {
                 url_image: empleado.url_image,
                 qr: empleado.qr,
                 fecha_actualiziacion: new Date(),
+                estatus: empleado.estatus,
             },
         });
         response = {

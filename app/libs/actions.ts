@@ -19,6 +19,7 @@ interface AlumnoProps {
     ciclo_escolar?: string | null;
     url_image?: string | null;
     qr?: string | null;
+    estatus?: string;
 }
 
 
@@ -129,6 +130,7 @@ export async function actualizarAlumno(id: number, alumno: AlumnoProps) {
                 fecha_actualiziacion: new Date(),
                 qr: alumno.qr,
                 url_image: alumno.url_image,
+                estatus: alumno.estatus,
             },
         });
         result.success = true;

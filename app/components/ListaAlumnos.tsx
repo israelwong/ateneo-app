@@ -6,6 +6,8 @@ import BtnGenerarQrAlumno from './BtnGenerarQrAlumno'
 import BtnSubirFotoAlumno from './BtnSubirFotoAlumno'
 import { generarQr, eliminarQr } from '../libs/QRAlumno'
 import { subirImagen } from '../libs/GestionarImagenes'
+import BtnEstatusAlumno from './BtnEstatusAlumno'
+// import { ImagenResponsables } from '../libs/ImagenResponsables'
 
 
 interface AlumnoProps {
@@ -24,7 +26,7 @@ interface AlumnoProps {
     autorizado_3?: string | null;
     ciclo_escolar?: string | null;
     qr?: string | null;
-    estatus?: string;
+    estatus: string;
     url_image?: string | null;
 }
 
@@ -48,7 +50,6 @@ function Page() {
     const [filtroConImagen, setFiltroConImagen] = useState<boolean>(false);
     const [copiando, setCopiando] = useState<boolean>(false);
     const [subiendoImagenes, setSubiendoImagenes] = useState<boolean>(false);
-
     const [eliminandoDashBaseDatos, setEliminandoDashBaseDatos] = useState<boolean>(false);
     const [user, setUser] = useState<UserProps>();
 
@@ -141,7 +142,7 @@ function Page() {
     // GENERAR QRS MASIVOS
     const generarQrsMasivos = async () => {
 
-        
+
         const result = confirm('¿Estás seguro de que deseas generar los QRs para todos los empleados?');
         if (!result) return;
 
@@ -330,6 +331,14 @@ function Page() {
         fetchAlumnos();
     }
 
+    // const generarImagenResponsables = async (alumno: AlumnoProps) => {
+
+    //     const result = confirm('¿Estás seguro de que deseas generar la imagen de los responsables?');
+    //     if (!result) return;
+    //     const response = ImagenResponsables({ alumno });
+    //     console.log('Imagen generada:', response);
+    // }
+
     return (
         <div className="mx-auto py-10 max-w-full p-5">
             {loading ? (
@@ -339,6 +348,10 @@ function Page() {
                     {user?.email === 'ing.israel.wong@gmail.com' && (
                         // Acciones masivas:
                         <div className='space-x-2 items-center flex'>
+
+                            {/* <button onClick={() => generarImagenResponsables()}>
+                                Generar imagen responsables
+                            </button> */}
 
                             <button
                                 onClick={() => LimpiarBaseDatos()}
@@ -398,7 +411,6 @@ function Page() {
                             <Link href="/dashboard/csv/alumnos" className="bg-gray-600 text-white p-2 rounded-md block">
                                 Registro masivo CSV
                             </Link>
-
                         </div>
                     )}
 
@@ -502,6 +514,7 @@ function Page() {
                                 <th className="border p-2">Acciones</th>
                                 <th className="border p-2">QR</th>
                                 <th className="border p-2">Foto</th>
+                                <th className="border p-2">Estatus</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -538,13 +551,24 @@ function Page() {
                                             onQrGenerated={handleQrGenerated}
                                         />
                                     </td>
-                                    <td>
+                                    <td className='border p-2'>
                                         <BtnSubirFotoAlumno
                                             alumno={alumno}
                                             onImageUploaded={handleImageUploaded}
                                         />
-
                                     </td>
+
+                                    <td className='items-center justify-center p-2 border'>
+                                        <BtnEstatusAlumno
+                                            alumno={alumno}
+                                            onStatusUpdated={fetchAlumnos}
+                                        />
+                                    </td>
+                                    {/* <td className='items-center justify-center p-2 border'>
+                                        <button onClick={() => generarImagenResponsables(alumno)}>
+                                            Generar imagen responsables
+                                        </button>
+                                    </td> */}
                                 </tr>
                             ))}
                         </tbody>

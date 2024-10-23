@@ -7,6 +7,7 @@ import BtnGenerarQrEmpleado from './BtnGenerarQrEmpleado'
 import BtnSubirFotoEmpleado from './BtnSubirFotoEmpleado'
 import { generarQr, eliminarQr } from '../libs/QREmpleado'
 import { subirImagen } from '../libs/GestionarImagenes'
+import BtnEstatusEmpleado from './BtnEstatusEmpleado'
 
 interface EmpleadoProps {
     id: number;
@@ -46,6 +47,7 @@ function Page() {
     const [eliminandoQRs, setEliminandoQRs] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [copiando, setCopiando] = useState<boolean>(false);
+    
 
     const [user, setUser] = useState<UserProps>();
 
@@ -295,7 +297,6 @@ function Page() {
         setEliminandoQRs(false);
     }
 
-
     return (
         <div className="mx-auto max-w-full p-5">
             {loading ? (
@@ -476,11 +477,15 @@ function Page() {
                                             onQrGenerated={handleQrGenerated}
                                         />
                                     </td>
-                                    <td className='text-center items-center'>
+                                    <td className='text-center items-center border'>
                                         <BtnSubirFotoEmpleado empleado={empleado}
                                             onImageUploaded={handleImageUploaded}
                                         />
-
+                                    </td>
+                                    <td className='items-center justify-center p-2 border'>
+                                        <BtnEstatusEmpleado empleado={empleado}
+                                            onStatusUpdated={fetchEmpleados}
+                                        />
                                     </td>
                                 </tr>
                             ))}

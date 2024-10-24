@@ -7,6 +7,7 @@ import BtnSubirFotoAlumno from './BtnSubirFotoAlumno'
 import { generarQr, eliminarQr } from '../libs/QRAlumno'
 import { subirImagen } from '../libs/GestionarImagenes'
 import BtnEstatusAlumno from './BtnEstatusAlumno'
+import { ImagenResponsables } from '../libs/ImagenResponsables'
 
 
 interface AlumnoProps {
@@ -51,6 +52,7 @@ function Page() {
     const [subiendoImagenes, setSubiendoImagenes] = useState<boolean>(false);
     const [eliminandoDashBaseDatos, setEliminandoDashBaseDatos] = useState<boolean>(false);
     const [user, setUser] = useState<UserProps>();
+    const [imagenesResponsables, setImagenesResponsables] = useState<boolean>(false);
 
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -268,7 +270,7 @@ function Page() {
             'ciclo_escolar',
             'alergia',
             'tipo_sangre',
-            'autorizados',
+            '@responsables',
             '@qr',
             '@url_image'
         ];
@@ -281,16 +283,9 @@ function Page() {
             encabezados,
             ...alumnosFiltrados.map(alumno => {
                 // Asignar las rutas obtenidas a alumno.qr y alumno.url_image
+                const rutaResponsales_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Alumno/Responsables/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/QR/
                 const rutaImagen_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Alumno/Fotografia/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/Fotografia/
                 const rutaQR_local = `/Users/israelwong/Desktop/Ateneo/Recursos/Alumno/QR/${alumno.matricula}.jpg`;// /Users/israelwong/Desktop/Ateneo/Recursos/QR/
-
-                const autorizados = [
-                    alumno.mama,
-                    alumno.papa,
-                    alumno.autorizado_1,
-                    alumno.autorizado_2,
-                    alumno.autorizado_3
-                ].filter(persona => persona).join(', ');
 
                 return [
                     alumno.matricula,
@@ -301,7 +296,7 @@ function Page() {
                     alumno.ciclo_escolar || 'N/A',
                     alumno.alergia ? `"${alumno.alergia}"` : 'N/A', // Agregar comillas a las alergias
                     alumno.tipo_sangre || 'N/A',
-                    `"${autorizados}"`, // Agrupar autorizados y agregar comillas
+                    rutaResponsales_local || 'N/A',
                     rutaQR_local || 'N/A',
                     rutaImagen_local || 'N/A'
                 ].join(',');
@@ -330,13 +325,27 @@ function Page() {
         fetchAlumnos();
     }
 
-    // const generarImagenResponsables = async (alumno: AlumnoProps) => {
+    const generarImagenResponsables = async (alumno: AlumnoProps) => {
+        const result = confirm('¿Estás seguro de que deseas generar la imagen de los responsables?');
+        if (!result) return;
+        const response = await ImagenResponsables({ alumno });
+        console.log(response);
+    }
 
-    //     const result = confirm('¿Estás seguro de que deseas generar la imagen de los responsables?');
-    //     if (!result) return;
-    //     const response = ImagenResponsables({ alumno });
-    //     console.log('Imagen generada:', response);
-    // }
+    const generarImagenResponsablesMasivas = async () => {
+
+        const result = confirm('¿Estás seguro de que deseas generar la imagen de los responsables?');
+        if (!result) return;
+
+        setImagenesResponsables(true);
+        for (const alumno of alumnos) {
+            const response = await ImagenResponsables({ alumno });
+            console.log(response);
+        }
+        setImagenesResponsables(false);
+        alert('Generación de imágenes de responsables finalizada');
+    }
+
 
     return (
         <div className="mx-auto py-10 p-5 w-screen">
@@ -348,9 +357,9 @@ function Page() {
                         // Acciones masivas:
                         <div className='space-x-2 items-center flex flex-wrap space-y-2'>
 
-                            {/* <button onClick={() => generarImagenResponsables()}>
-                                Generar imagen responsables
-                            </button> */}
+                            <button onClick={() => generarImagenResponsablesMasivas()}>
+                                { imagenesResponsables ? 'Generando imágenes...' : 'Generar imágenes de responsables'}
+                            </button>
 
                             <button
                                 onClick={() => LimpiarBaseDatos()}
@@ -491,9 +500,6 @@ function Page() {
                         />
                     </div>
 
-                    <div>
-                    </div>
-
                     <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4'>
 
                         {alumnosFiltrados.map((alumno, index) => (
@@ -509,11 +515,9 @@ function Page() {
                                             alumno={alumno}
                                             onStatusUpdated={fetchAlumnos}
                                         />
-
                                     </div>
                                 </div>
                                 <div className='grid grid-cols-3 gap-2'>
-
                                     <div className='col-span-2'>
                                         <ul>
                                             <li className="border p-1"><b>Alumno:</b> {alumno.nombre}</li>
@@ -546,6 +550,11 @@ function Page() {
                                         ">
                                             Ficha digital
                                         </Link>
+                                        {user?.email === 'ing.israel.wong@gmail.com' && (
+                                            <button className='px-3 py-3' onClick={() => generarImagenResponsables(alumno)}>
+                                                Generar imagen responsables
+                                            </button>
+                                        )}
                                     </div>
 
 

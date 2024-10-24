@@ -53,6 +53,7 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
         }
     };
 
+   
     const handleUploadForAlumno = async (alumno: Alumno) => {
         const file = files[alumno.id];
         if (!file) {
@@ -67,8 +68,9 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
                 return;
             }
 
-            await actualizarAlumno(alumno.id, { ...alumno, url_image: result_uploaded.publicUrl ?? null });
-            setImageUrl(result_uploaded.publicUrl ?? null);
+            const newImageUrl = result_uploaded.publicUrl ? `${result_uploaded.publicUrl}?${new Date().getTime()}` : null;
+            await actualizarAlumno(alumno.id, { ...alumno, url_image: newImageUrl });
+            setImageUrl(newImageUrl);
             setImageDeleted(false);
             console.log('Imagen subida:', result_uploaded);
             onImageUploaded();

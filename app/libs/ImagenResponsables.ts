@@ -1,3 +1,19 @@
+import { toPng } from 'html-to-image';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Faltan las variables de entorno SUPABASE_URL o SUPABASE_KEY');
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Faltan las variables de entorno SUPABASE_URL o SUPABASE_KEY');
+}
+
 interface Alumno {
     id: number;
     matricula: string;
@@ -22,21 +38,7 @@ interface ImagenResponsablesProps {
     alumno: Alumno;
 }
 
-export function ImagenResponsables({ alumno }: ImagenResponsablesProps) {
-
-    const canvas = document.createElement('canvas');
-    const scaleFactor = 4; // Factor de escala para aumentar la resolución
-    const padding = 40 * scaleFactor; // Aumentar el padding para hacer la imagen más grande
-    const lineHeight = 50 * scaleFactor; // Aumentar la altura de línea para hacer la imagen más grande
-    const fontSize = 40 * scaleFactor; // Aumentar el tamaño de fuente para hacer la imagen más grande
-    const ctx = canvas.getContext('2d');
-
-    if (!ctx) {
-        console.error('No se pudo obtener el contexto 2D');
-        return;
-    }
-
-    ctx.font = `${fontSize}px Arial`;
+export async function ImagenResponsables({ alumno }: ImagenResponsablesProps) {
 
     const responsables = [
         alumno.mama,
@@ -46,33 +48,66 @@ export function ImagenResponsables({ alumno }: ImagenResponsablesProps) {
         alumno.autorizado_3
     ].filter(persona => persona);
 
-    const responsablesUnicos = Array.from(new Set(responsables)).filter((responsable): responsable is string => !!responsable);
+    const container = document.createElement('div');
+    container.style.width = '400px';
+    container.style.height = '400px';
+    container.style.backgroundColor = 'white';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.justifyContent = 'center';
+    container.style.alignItems = 'center';
+    container.style.fontSize = '20px';
+    container.style.fontWeight = 'bold';
+    container.style.fontFamily = 'Arial';
+    container.style.padding = '20px';
+    container.style.alignContent = 'center';
+    container.style.textAlign = 'center';
+    container.style.alignItems = 'center';
 
-    // Calcular el ancho del texto más largo
-    const maxTextWidth = Math.max(...responsablesUnicos.map(responsable => ctx.measureText(responsable).width));
+    responsables.forEach(responsable => {
+        const textElement = document.createElement('div');
+        textElement.textContent = responsable || '';
+        container.appendChild(textElement);
 
-    const totalTextHeight = responsablesUnicos.length * lineHeight;
-    canvas.width = (maxTextWidth + 2 * padding);
-    canvas.height = (totalTextHeight + 2 * padding);
-
-    // Rellenar el fondo con color blanco
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = 'black';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    // Calcular la posición inicial para centrar el texto verticalmente
-    const startY = padding + lineHeight / 2;
-
-    responsablesUnicos.forEach((responsable, index) => {
-        ctx.fillText(responsable, canvas.width / 2, startY + index * lineHeight);
+        // Añadir un salto de línea adicional
+        const lineBreak = document.createElement('div');
+        lineBreak.style.height = '20px'; // Ajustar la altura del salto de línea
+        container.appendChild(lineBreak);
     });
 
-    const dataUrl = canvas.toDataURL('image/jpeg', 1.0); // Cambiar a JPG con calidad máxima
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'responsables.jpg'; // Cambiar la extensión a JPG
-    link.click();
+    document.body.appendChild(container);
+
+    const dataUrl = await toPng(container);
+    document.body.removeChild(container);
+
+    // Convertir dataUrl a Blob
+    const response = await fetch(dataUrl);
+    const blob = await response.blob();
+
+    // Convertir Blob a File
+    const file = new File([blob], `${alumno.matricula}.png`, { type: 'image/png' });
+
+    // // Convertir PNG a JPG usando browser-image-compression
+    // const jpgBlob = await imageCompression(file, {
+    //     maxWidthOrHeight: 400,
+    //     useWebWorker: true,
+    //     fileType: 'image/jpeg',
+    //     initialQuality: 1.0 // Máxima calidad
+    // });
+
+    // Subir la imagen JPG a Supabase
+    const { data, error } = await supabase.storage
+        .from('Ateneo/Alumno/Responsables')
+        .upload(`${alumno.matricula}.jpg`, file, {
+            cacheControl: '3600',
+            upsert: true
+        });
+
+    if (error) {
+        console.error('Error al subir la imagen:', error);
+        return { success: false, message: `Error al subir la imagen: ${error.message}` };
+    } else {
+        console.log('Imagen subida con éxito:', data);
+        return { success: true, message: 'Imagen subida con éxito' };
+    }
 }

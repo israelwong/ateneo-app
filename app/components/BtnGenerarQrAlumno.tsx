@@ -28,7 +28,7 @@ interface BtnGenerarQrAlumnoProps {
     onQrGenerated: () => void;
 }
 
-const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGenerated }) => {
+const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGenerated }) => {
     const [generandoQR, setGenerandoQR] = useState(false);
     const [eliminandoQR, setEliminandoQR] = useState(false);
     const [qrAvailable, setQrAvailable] = useState(false);
@@ -87,7 +87,7 @@ const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrG
                         className="text-center text-red-500"
                         disabled={eliminandoQR}
                     >
-                        {eliminandoQR ? 'Eliminando...' : 'Eliminar'}
+                        {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}
                     </button>
                 </div>
             ) : (
@@ -103,4 +103,4 @@ const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrG
     );
 };
 
-export default BtnGenerarQrEmpleado;
+export default BtnGenerarQrAlumno;

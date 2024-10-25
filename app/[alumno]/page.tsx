@@ -47,7 +47,7 @@ async function Page({ params }: PageProps) {
                             alt="Avatar"
                             width={200}
                             height={400}
-                            className="rounded-full object-cover h-90 w-60 object-middle border-8 border-gray-200 mx-auto drop-shadow-lg"
+                            className="rounded-full object-cover h-90 w-60 object-middle border-8 border-gray-200 mx-auto"
                         />
 
                         <h3 className="text-center text-3xl font-bold px-16 mt-2 mb-3 text-pink-900">

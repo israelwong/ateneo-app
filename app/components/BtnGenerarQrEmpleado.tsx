@@ -82,7 +82,7 @@ const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrEmpleadoProps> = ({ empleado, o
                         className="text-center text-red-800 mt-2"
                         disabled={eliminandoQR}
                     >
-                        {eliminandoQR ? 'Eliminando...' : 'Eliminar'}
+                        {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}
                     </button>
                 </div>
             ) : (

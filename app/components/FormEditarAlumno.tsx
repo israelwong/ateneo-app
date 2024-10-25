@@ -4,6 +4,7 @@ import { actualizarAlumno, obtenerAlumnoPorId, eliminarAlumno } from '@/app/libs
 import Link from 'next/link';
 import BtnSubirFotoAlumno from '@/app/components/BtnSubirFotoAlumno';
 import { useRouter } from 'next/navigation';
+import BtnGenerarQrAlumno from './BtnGenerarQrAlumno';
 
 interface AlumnoProps {
     id: number;
@@ -109,10 +110,11 @@ function FormEditarAlumno({ id }: FormEditarAlumnoProps) {
     const handleImageUploaded = () => {
         fetchAlumno(id);
     };
+    const handleQrAlumno = () => {
+        fetchAlumno(id);
+    };
 
     const handleEliminarAlumno = async () => {
-        console.log('Eliminar alumno:', alumno.id);
-        
         if (confirm('¿Estás seguro de que deseas eliminar este alumno?')) {
             await eliminarAlumno(alumno.id);
             router.push('/dashboard/alumnos');
@@ -124,10 +126,17 @@ function FormEditarAlumno({ id }: FormEditarAlumnoProps) {
             {loading ? (
                 <p className='text-center'>Cargando datos alumno...</p>
             ) : (
-                <div className='grid grid-cols-2'>
-                    <BtnSubirFotoAlumno alumno={alumno} onImageUploaded={handleImageUploaded} />
+                <div className='grid grid-cols-3 gap-4'>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <BtnSubirFotoAlumno alumno={alumno} onImageUploaded={handleImageUploaded} />
+                        <BtnGenerarQrAlumno alumno={alumno} onQrGenerated={handleQrAlumno} />
+                        <Link href={`/${alumno.matricula}`} target='_blank' className="bg-black text-white font-bold p-5 rounded block mt-2 text-center">
+                            Abrir Ficha digital
+                        </Link>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-4 col-span-2">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Matrícula</label>
                             <input
@@ -275,19 +284,19 @@ function FormEditarAlumno({ id }: FormEditarAlumnoProps) {
                                 className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
                                 disabled={actualizando}
                             >
-                                {actualizando ? 'Actualizando...' : 'Actualizar'}
+                                {actualizando ? 'Actualizando...' : 'Actualizar y cerrar ventana'}
                             </button>
 
-                            <Link href="/dashboard/alumnos" className="block mt-2 text-center w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                Cancelar
+                            <Link href="/dashboard/alumnos" className="block mt-2 text-center w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-3">
+                                Cerrar ventana sin guardar cambios
                             </Link>
+                            <button type='button' onClick={() => handleEliminarAlumno()} className='text-red-700  border border-red-600 rounded-md px-3 py-2 w-full'>
+                                Eliminar alumno
+                            </button>
                         </div>
                     </form>
 
                     <div className='text-center py-5'>
-                        <button type='button' onClick={() => handleEliminarAlumno()} className='text-red-700 underline'>
-                            Eliminar alumno
-                        </button>
                     </div>
                 </div>
             )}

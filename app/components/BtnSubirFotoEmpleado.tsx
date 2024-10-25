@@ -117,7 +117,7 @@ const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ empleado, o
                         className='rounded-full'
                     />
                     <button onClick={() => handleEliminarImagen(empleado?.id?.toString() ?? '')} disabled={uploading} className='underline text-red-600'>
-                        {uploading ? 'Eliminando...' : 'Eliminar'}
+                        {uploading ? 'Eliminando...' : 'Eliminar foto'}
                     </button>
                 </div>
             ) : (

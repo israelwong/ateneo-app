@@ -127,7 +127,7 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
                             disabled={uploading}
                             className='underline text-red-600'
                         >
-                            {uploading ? 'Eliminando...' : 'Eliminar'}
+                            {uploading ? 'Eliminando...' : 'Eliminar foto'}
                         </button>
                     </div>
                 </div>

@@ -10,12 +10,22 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function subirImagen(file: File, nombre: string, directorio: string) {
     try {
+
         const filename = `${directorio}/${nombre}.jpg`;
 
+        //remover si existe
+        const { error: errorDelete } = await supabase.storage
+            .from('Ateneo')
+            .remove([filename]);
+            if (errorDelete) {
+                console.error('Error al eliminar la imagen:', errorDelete.message);
+            }
+            console.log('Imagen eliminada exitosamente');
+
+            console.log('Subiendo imagen:', filename);
         const { error } = await supabase.storage
             .from('Ateneo')
             .upload(filename, file);
-
         if (error) {
             console.error('Error al subir la imagen:', error.message);
         } else {

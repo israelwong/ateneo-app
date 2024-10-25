@@ -73,6 +73,7 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
             setImageDeleted(false);
             console.log('Imagen subida:', result_uploaded);
             onImageUploaded();
+
         } catch (error) {
             console.error('Error al subir la imagen:', error);
         } finally {

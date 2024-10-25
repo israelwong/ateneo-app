@@ -60,7 +60,8 @@ const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGen
             setGenerandoQR(true);
             const result_qr_generate = await generarQr(alumno);
             console.log('QR generado:', result_qr_generate);
-            const response = await actualizarAlumno(alumno.id, { ...alumno, qr: result_qr_generate.url_svg });
+            const newImageQr = result_qr_generate.url_svg ? `${result_qr_generate.url_svg}?${new Date().getTime()}` : null;
+            const response = await actualizarAlumno(alumno.id, { ...alumno, qr: newImageQr});
             console.log('Empleado actualizado:', response);
             setQrAvailable(true);
             onQrGenerated();
@@ -84,7 +85,7 @@ const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGen
                     />
                     <button
                         onClick={() => handleEliminarQR(alumno.id)}
-                        className="text-center text-red-500"
+                        className="text-center text-red-500 underline"
                         disabled={eliminandoQR}
                     >
                         {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}

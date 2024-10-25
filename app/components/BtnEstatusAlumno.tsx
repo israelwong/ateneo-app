@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { actualizarAlumno } from '@/app/libs/actions';
 
 interface Alumno {
@@ -28,13 +28,21 @@ interface BtnGenerarQrAlumnoProps {
 
 function BtnEstatusAlumno({ alumno, onStatusUpdated }: BtnGenerarQrAlumnoProps) {
     const [activando, setActivando] = useState<boolean>(false);
+    const [estatus, setEstatus] = useState<string | undefined>(alumno?.estatus);
+
+    useEffect(() => {
+        if (alumno) {
+            setEstatus(alumno.estatus);
+        }
+    }, [alumno]);
 
     const toggleEstatus = async (alumno: Alumno) => {
-        const newStatus = alumno.estatus === 'activo' ? 'inactivo' : 'activo';
+        const newStatus = estatus === 'activo' ? 'inactivo' : 'activo';
 
         try {
             setActivando(true);
             await actualizarAlumno(alumno.id, { ...alumno, estatus: newStatus });
+            setEstatus(newStatus);
             setActivando(false);
             if (onStatusUpdated) onStatusUpdated(); // Llamar a la función si está definida
         } catch (error) {
@@ -47,9 +55,9 @@ function BtnEstatusAlumno({ alumno, onStatusUpdated }: BtnGenerarQrAlumnoProps) 
         <div className='w-full'>
             <button
                 onClick={() => alumno && toggleEstatus(alumno)}
-                className={`w-full px-2 py-1 ${alumno && alumno.estatus === 'activo' ? 'bg-green-500' : 'bg-red-500'} text-white rounded-md`}
+                className={`w-full px-2 py-1 ${estatus === 'activo' ? 'bg-green-500' : 'bg-red-500'} text-white rounded-md`}
             >
-                {activando ? 'Cambiando' : alumno && alumno.estatus === 'activo' ? 'Activo' : 'Inactivo'}
+                {activando ? 'Cambiando' : estatus === 'activo' ? 'Activo' : 'Inactivo'}
             </button>
         </div>
     );

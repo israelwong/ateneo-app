@@ -53,7 +53,6 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
         }
     };
 
-   
     const handleUploadForAlumno = async (alumno: Alumno) => {
         const file = files[alumno.id];
         if (!file) {
@@ -115,13 +114,16 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
             {imageUrl && !imageDeleted ? (
                 <div id='imagen'>
                     <div className='flex flex-col items-center border p-2'>
-                        <Image
+                        { alumno?.url_image && (
+                            <Image
                             src={imageUrl}
                             alt={alumno?.nombre ?? 'Alumno'}
                             width={200}
                             height={200}
                             className='object-cover mb-2'
-                        />
+                            />
+                        ) }
+
                         <button
                             onClick={() => alumno && handleEliminarImagen(alumno.matricula ?? 0)}
                             disabled={uploading}

@@ -53,6 +53,8 @@ function Page() {
     const [eliminandoDashBaseDatos, setEliminandoDashBaseDatos] = useState<boolean>(false);
     const [user, setUser] = useState<UserProps>();
     const [imagenesResponsables, setImagenesResponsables] = useState<boolean>(false);
+    const [filtroInactivo, setFiltroInactivo] = useState<boolean>(false);
+    const [filtroActivo, setFiltroActivo] = useState<boolean>(false);
 
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -129,7 +131,9 @@ function Page() {
         const matchesFotoPendiente = filtroFotoPendiente ? !alumno.url_image : true;
         const matchesQrPendiente = filtroQrPendiente ? !alumno.qr : true;
         const matchesConImagen = filtroConImagen ? !!alumno.url_image : true;
-        return matchesNivel && matchesBusqueda && matchesFotoPendiente && matchesQrPendiente && matchesConImagen;
+        const matchesInactivo = filtroInactivo ? alumno.estatus.toLowerCase() === 'inactivo' : true;
+        const matchesActivo = filtroActivo ? alumno.estatus.toLowerCase() === 'activo' : true;
+        return matchesNivel && matchesBusqueda && matchesFotoPendiente && matchesQrPendiente && matchesConImagen && matchesInactivo && matchesActivo;
     });
 
     const handleQrGenerated = () => {
@@ -358,7 +362,7 @@ function Page() {
                         <div className='space-x-2 items-center flex flex-wrap space-y-2'>
 
                             <button onClick={() => generarImagenResponsablesMasivas()}>
-                                { imagenesResponsables ? 'Generando imágenes...' : 'Generar imágenes de responsables'}
+                                {imagenesResponsables ? 'Generando imágenes...' : 'Generar imágenes de responsables'}
                             </button>
 
                             <button
@@ -467,6 +471,26 @@ function Page() {
                                 />
                                 <span className="text-gray-800 font-bold">QR Pendiente</span>
                             </label>
+
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={filtroInactivo}
+                                    onChange={() => setFiltroInactivo(!filtroInactivo)}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span className="text-gray-800 font-bold">Inactivo</span>
+                            </label>
+
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={filtroActivo}
+                                    onChange={() => setFiltroActivo(!filtroActivo)}
+                                    className="form-checkbox h-5 w-5 text-blue-600"
+                                />
+                                <span className="text-gray-800 font-bold">Activo</span>
+                            </label>
                         </div>
                     </div>
                     <div>
@@ -477,9 +501,11 @@ function Page() {
                                         Coincidencias: {alumnosFiltrados.length}
                                         {filtroFotoPendiente && <span> (Foto Pendiente)</span>}
                                         {filtroQrPendiente && <span> (QR Pendiente)</span>}
-                                        {filtroConImagen && <span> (Con Imagen)</span>}
+                                        {filtroConImagen && <span> (Con foto)</span>}
                                         {terminoBusqueda && <span> (Búsqueda: {terminoBusqueda})</span>}
                                         {nivelSeleccionado && <span> (Nivel: {nivelSeleccionado})</span>}
+                                        {filtroActivo && <span> (Estatus Activo)</span>}
+                                        {filtroInactivo && <span> (Estatus Inactivo)</span>}
                                     </div>
                                 ) : (
                                     <div>No hay coincidencias</div>

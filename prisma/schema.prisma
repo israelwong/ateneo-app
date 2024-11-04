@@ -8,25 +8,25 @@ datasource db {
 }
 
 model Alumno {
-  id    Int     @id @default(autoincrement())
-  matricula String @unique
-  nombre  String @unique
-  nivel String 
-  grado String?
-  grupo String?
-  alergia String?
-  tipo_sangre String?
-  mama String?
-  papa String?
-  autorizado_1 String?
-  autorizado_2 String?
-  autorizado_3 String?
-  ciclo_escolar String? @default("2024-2025")
-  url_image String?
-  qr String?
-  fecha_registro DateTime @default(now())
+  id                   Int       @id @default(autoincrement())
+  matricula            String    @unique
+  nombre               String    @unique
+  nivel                String
+  grado                String?
+  grupo                String?
+  alergia              String?
+  tipo_sangre          String?
+  mama                 String?
+  papa                 String?
+  autorizado_1         String?
+  autorizado_2         String?
+  autorizado_3         String?
+  ciclo_escolar        String?   @default("2024-2025")
+  url_image            String?
+  qr                   String?
+  fecha_registro       DateTime  @default(now())
   fecha_actualiziacion DateTime?
-  estatus String @default("Activo")
+  estatus              String    @default("Activo")
 }
 
 model User {
@@ -34,21 +34,22 @@ model User {
   name      String
   email     String   @unique
   password  String
+  status    String   @default("Activo")
   createdAt DateTime @default(now())
 }
 
 model empleado {
-  id    Int     @id @default(autoincrement())
-  nombre  String @unique
-  telefono String?
-  email String?
-  area String
-  puesto String
-  contacto_emergencia String? 
-  tipo_sangre String?
-  url_image String?
-  qr String?
-  fecha_registro DateTime @default(now())
+  id                   Int       @id @default(autoincrement())
+  nombre               String    @unique
+  telefono             String?
+  email                String?
+  area                 String
+  puesto               String
+  contacto_emergencia  String?
+  tipo_sangre          String?
+  url_image            String?
+  qr                   String?
+  fecha_registro       DateTime  @default(now())
   fecha_actualiziacion DateTime?
-  estatus String @default("Activo")
+  estatus              String    @default("Activo")
 }

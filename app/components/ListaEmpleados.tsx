@@ -488,13 +488,15 @@ function Page() {
                                             onImageUploaded={handleImageUploaded}
                                         />
                                     </td>
-                                    <td className='items-center justify-center p-2 border'>
-                                        <BtnEstatusEmpleado
-                                            rol={user?.rol || ''}
-                                            empleado={empleado}
-                                            onStatusUpdated={fetchEmpleados}
-                                        />
-                                    </td>
+                                    {user?.rol !== 'Usuario' && (
+                                        <td className='items-center justify-center p-2 border'>
+                                            <BtnEstatusEmpleado
+                                                rol={user?.rol || ''}
+                                                empleado={empleado}
+                                                onStatusUpdated={fetchEmpleados}
+                                            />
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>

@@ -540,16 +540,18 @@ function Page() {
                                     <div className='flex space-x-2'>
 
                                         {user?.rol !== 'User' && (
-                                            <Link href={`/dashboard/alumno/${alumno.id}`} className='bg-blue-500 text-white font-bold py-1 px-2 rounded block'>
-                                                Editar
-                                            </Link>
+                                            <>
+                                                <Link href={`/dashboard/alumno/${alumno.id}`} className='bg-blue-500 text-white font-bold py-1 px-2 rounded block'>
+                                                    Editar
+                                                </Link>
+                                                <BtnEstatusAlumno
+                                                    rol={user?.rol}
+                                                    alumno={alumno}
+                                                    onStatusUpdated={fetchAlumnos}
+                                                />
+                                            </>
                                         )}
 
-                                        <BtnEstatusAlumno
-                                            rol={user?.rol}
-                                            alumno={alumno}
-                                            onStatusUpdated={fetchAlumnos}
-                                        />
                                     </div>
                                 </div>
                                 <div className='grid grid-cols-3 gap-2'>

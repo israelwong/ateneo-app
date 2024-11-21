@@ -10,24 +10,26 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [validando, setValidando] = useState(false);
-    
+
     const router = useRouter();
 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         setValidando(true);
         const formData = new FormData(e.target as HTMLFormElement);
         const email = formData.get('email') as string;
         const password = formData.get('password') as string;
         const data = await authenticateUser(email, password);
+
         if (typeof data === 'string' || !data.token) {
             setError('Error al autenticar usuario');
             console.error('Error al autenticar usuario');
             setValidando(false);
             return;
         }
+
         Cookies.set('token', data.token);
         router.push('/dashboard');
 
@@ -63,7 +65,7 @@ export default function LoginPage() {
                     <button type="submit" className='bg-blue-500 text-white p-3 rounded-md w-full max-w-xs'
                         disabled={validando}
                     >
-                        { validando ? 'Validando...' : 'Iniciar sesión' }
+                        {validando ? 'Validando...' : 'Iniciar sesión'}
                     </button>
                 </form>
             </div>

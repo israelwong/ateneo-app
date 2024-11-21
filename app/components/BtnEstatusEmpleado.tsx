@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { actualizarEmpleado } from '@/app/libs/empleados'
 
 interface EmpleadoProps {
@@ -18,12 +18,13 @@ interface EmpleadoProps {
 }
 
 interface BtnEstatusEmpleadoProps {
+    rol: string;
     empleado: EmpleadoProps;
     onStatusUpdated?: () => void; // Hacer opcional si no se usa
 
 }
 
-export default function BtnEstatusEmpleado( { empleado, onStatusUpdated }: BtnEstatusEmpleadoProps ) {
+export default function BtnEstatusEmpleado({ rol, empleado, onStatusUpdated }: BtnEstatusEmpleadoProps) {
 
     const [activando, setActivando] = useState<boolean>(false);
 
@@ -42,10 +43,10 @@ export default function BtnEstatusEmpleado( { empleado, onStatusUpdated }: BtnEs
 
     return (
         <div>
-
             <button
                 onClick={() => toggleEstatus(empleado)}
                 className={`px-2 py-1 rounded ${empleado.estatus === 'activo' ? 'bg-green-500' : 'bg-red-500'} text-white`}
+                disabled={rol === 'User'}
             >
                 {
                     activando ? 'Cambiando' : empleado.estatus === 'activo' ? 'Activo' : 'Inactivo'

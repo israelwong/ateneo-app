@@ -26,6 +26,7 @@ interface EmpleadoProps {
 }
 
 interface UserProps {
+    rol?: string;
     email: string;
 }
 
@@ -47,7 +48,7 @@ function Page() {
     const [eliminandoQRs, setEliminandoQRs] = useState<boolean>(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [copiando, setCopiando] = useState<boolean>(false);
-    
+
 
     const [user, setUser] = useState<UserProps>();
 
@@ -459,13 +460,15 @@ function Page() {
                                     <td className="border p-2">{empleado.tipo_sangre || "N/A"}</td>
                                     <td className="border p-2">
                                         <div className='text-sm space-y-3 text-center items-center justify-center'>
-                                            <button
-                                                className="bg-yellow-500 text-white font-bold py-1 px-2 rounded block w-full h-14"
-                                                onClick={() => handleEdit(empleado.id)}
-                                            >
-                                                Editar empleado
-                                            </button>
-                                            <Link href={`/empleado/${empleado.id}`} target='_blank' 
+                                            {user?.rol !== 'User' && (
+                                                <button
+                                                    className="bg-yellow-500 text-white font-bold py-1 px-2 rounded block w-full h-14"
+                                                    onClick={() => handleEdit(empleado.id)}
+                                                >
+                                                    Editar empleado
+                                                </button>
+                                            )}
+                                            <Link href={`/empleado/${empleado.id}`} target='_blank'
                                                 className="bg-black text-white font-bold py-1 px-2 rounded  w-full h-10 flex items-center justify-center">
                                                 Ficha digital
                                             </Link>
@@ -473,17 +476,22 @@ function Page() {
                                     </td>
                                     <td className="border p-2">
                                         <BtnGenerarQrEmpleado
+                                            rol={user?.rol || ''}
                                             empleado={empleado}
                                             onQrGenerated={handleQrGenerated}
                                         />
                                     </td>
                                     <td className='text-center items-center border'>
-                                        <BtnSubirFotoEmpleado empleado={empleado}
+                                        <BtnSubirFotoEmpleado
+                                            rol={user?.rol || ''}
+                                            empleado={empleado}
                                             onImageUploaded={handleImageUploaded}
                                         />
                                     </td>
                                     <td className='items-center justify-center p-2 border'>
-                                        <BtnEstatusEmpleado empleado={empleado}
+                                        <BtnEstatusEmpleado
+                                            rol={user?.rol || ''}
+                                            empleado={empleado}
                                             onStatusUpdated={fetchEmpleados}
                                         />
                                     </td>

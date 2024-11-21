@@ -22,11 +22,13 @@ interface Alumno {
 }
 
 interface BtnGenerarQrAlumnoProps {
+    rol?: string
     alumno: Alumno | undefined;
     onStatusUpdated?: () => void; // Hacer opcional si no se usa
 }
 
-function BtnEstatusAlumno({ alumno, onStatusUpdated }: BtnGenerarQrAlumnoProps) {
+function BtnEstatusAlumno({ rol, alumno, onStatusUpdated }: BtnGenerarQrAlumnoProps) {
+    console.log('alumno', rol);
     const [activando, setActivando] = useState<boolean>(false);
     const [estatus, setEstatus] = useState<string | undefined>(alumno?.estatus);
 
@@ -56,6 +58,7 @@ function BtnEstatusAlumno({ alumno, onStatusUpdated }: BtnGenerarQrAlumnoProps) 
             <button
                 onClick={() => alumno && toggleEstatus(alumno)}
                 className={`w-full px-2 py-1 ${estatus === 'activo' ? 'bg-green-500' : 'bg-red-500'} text-white rounded-md`}
+                disabled={rol !== 'User'}
             >
                 {activando ? 'Cambiando' : estatus === 'activo' ? 'Activo' : 'Inactivo'}
             </button>

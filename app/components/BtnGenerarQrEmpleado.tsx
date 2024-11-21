@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import { generarQr, eliminarQr } from '@/app/libs/QREmpleado';
 import { actualizarEmpleado } from '@/app/libs/empleados';
@@ -20,14 +21,16 @@ interface Empleado {
 }
 
 interface BtnGenerarQrEmpleadoProps {
+    rol: string;
     empleado: Empleado | undefined;
     onQrGenerated: () => void;
 }
 
-const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrEmpleadoProps> = ({ empleado, onQrGenerated }) => {
+const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrEmpleadoProps> = ({ rol, empleado, onQrGenerated }) => {
     const [generandoQR, setGenerandoQR] = useState(false);
     const [eliminandoQR, setEliminandoQR] = useState(false);
     const [qrAvailable, setQrAvailable] = useState(false);
+
 
     useEffect(() => {
         if (empleado?.qr) {
@@ -68,7 +71,7 @@ const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrEmpleadoProps> = ({ empleado, o
 
     return (
         <div className="text-center">
-            { qrAvailable && empleado?.qr ? (
+            {qrAvailable && empleado?.qr ? (
                 <div className="mb-4">
                     <Image
                         src={empleado.qr}
@@ -77,13 +80,17 @@ const BtnGenerarQrEmpleado: React.FC<BtnGenerarQrEmpleadoProps> = ({ empleado, o
                         height={100}
                         className="mx-auto"
                     />
-                    <button
-                        onClick={() => handleEliminarQR(empleado.id)}
-                        className="text-center text-red-800 mt-2"
-                        disabled={eliminandoQR}
-                    >
-                        {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}
-                    </button>
+
+                    {rol !== 'User' && (
+                        <button
+                            onClick={() => handleEliminarQR(empleado.id)}
+                            className="text-center text-red-800 mt-2"
+                            disabled={eliminandoQR}
+                        >
+                            {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}
+                        </button>
+                    )}
+
                 </div>
             ) : (
                 <button

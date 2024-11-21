@@ -123,6 +123,7 @@ function FormEditarEmpleado({ id }: FormEditarEmpleadoProps) {
 
             <div className='justify-end text-center mx-auto'>
                 <BtnSubirFotoEmpleado
+                    // rol={user?.rol}
                     empleado={empleado}
                     onImageUploaded={handleImageUploaded}
                 />

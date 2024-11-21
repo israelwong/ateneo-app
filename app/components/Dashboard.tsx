@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';

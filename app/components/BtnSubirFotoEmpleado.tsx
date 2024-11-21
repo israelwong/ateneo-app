@@ -20,11 +20,12 @@ interface Empleado {
 }
 
 interface BtnSubirFotoEmpleadoProps {
+    rol?: string;
     empleado: Empleado | undefined | null;
     onImageUploaded: () => void;
 }
 
-const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ empleado, onImageUploaded }) => {
+const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ rol, empleado, onImageUploaded }) => {
 
     const [uploading, setUploading] = useState(false);
     const fileInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
@@ -34,7 +35,7 @@ const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ empleado, o
 
     useEffect(() => {
         if (empleado?.url_image) {
-            console.log( empleado.url_image);
+            console.log(empleado.url_image);
             setImageUrl(empleado.url_image ?? null);
         }
     }, [empleado]);
@@ -84,7 +85,7 @@ const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ empleado, o
             await actualizarEmpleado(empleado.id, { ...empleado, url_image: null });
             setImageUrl(null);
         }
-        
+
         try {
             const responseDeleteImage = await eliminarImagen(id, 'Empleado/Fotografia');
             if (!responseDeleteImage.success) {
@@ -122,12 +123,14 @@ const BtnSubirFotoEmpleado: React.FC<BtnSubirFotoEmpleadoProps> = ({ empleado, o
                 </div>
             ) : (
                 <div>
-                    <button
-                        onClick={() => empleado && fileInputRefs.current[empleado.id]?.click()}
-                        className="bg-gray-200 text-black font-bold py-2 px-4 rounded mr-2 text-sm"
-                    >
-                        Adjuntar
-                    </button>
+                    {rol !== 'User' && (
+                        <button
+                            onClick={() => empleado && fileInputRefs.current[empleado.id]?.click()}
+                            className="bg-gray-200 text-black font-bold py-2 px-4 rounded mr-2 text-sm"
+                        >
+                            Adjuntar
+                        </button>
+                    )}
                     <input
                         type="file"
                         onChange={(event) => handleFileChange(event, empleado?.id)}

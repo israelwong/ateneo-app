@@ -31,6 +31,7 @@ interface AlumnoProps {
 }
 
 interface UserProps {
+    rol: string;
     email: string;
 }
 
@@ -537,10 +538,15 @@ function Page() {
                                 <div className='grid grid-cols-2 gap-2 mb-4'>
                                     <div className='text-2xl font-semibold'>{alumno.matricula}</div>
                                     <div className='flex space-x-2'>
-                                        <Link href={`/dashboard/alumno/${alumno.id}`} className='bg-blue-500 text-white font-bold py-1 px-2 rounded block'>
-                                            Editar
-                                        </Link>
+
+                                        {user?.rol !== 'User' && (
+                                            <Link href={`/dashboard/alumno/${alumno.id}`} className='bg-blue-500 text-white font-bold py-1 px-2 rounded block'>
+                                                Editar
+                                            </Link>
+                                        )}
+
                                         <BtnEstatusAlumno
+                                            rol={user?.rol}
                                             alumno={alumno}
                                             onStatusUpdated={fetchAlumnos}
                                         />
@@ -567,10 +573,12 @@ function Page() {
 
                                     <div className='flex flex-col items-center'>
                                         <BtnSubirFotoAlumno
+                                            rol={user?.rol}
                                             alumno={alumno}
                                             onImageUploaded={handleImageUploaded}
                                         />
                                         <BtnGenerarQrAlumno
+                                            rol={user?.rol}
                                             alumno={alumno}
                                             onQrGenerated={handleQrGenerated}
                                         />
@@ -585,11 +593,7 @@ function Page() {
                                             </button>
                                         )}
                                     </div>
-
-
                                 </div>
-
-
                             </div>
                         ))}
 

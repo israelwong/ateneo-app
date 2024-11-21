@@ -24,11 +24,12 @@ interface Alumno {
 }
 
 interface BtnSubirFotoAlumnoProps {
+    rol?: string;
     alumno: Alumno | undefined;
     onImageUploaded: () => void;
 }
 
-const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImageUploaded }) => {
+const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ rol, alumno, onImageUploaded }) => {
 
     const [uploading, setUploading] = useState(false);
     const fileInputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
@@ -115,23 +116,25 @@ const BtnSubirFotoAlumno: React.FC<BtnSubirFotoAlumnoProps> = ({ alumno, onImage
             {imageUrl && !imageDeleted ? (
                 <div id='imagen'>
                     <div className='flex flex-col items-center border p-2'>
-                        { alumno?.url_image && (
+                        {alumno?.url_image && (
                             <Image
-                            src={imageUrl}
-                            alt={alumno?.nombre ?? 'Alumno'}
-                            width={200}
-                            height={200}
-                            className='object-cover mb-2'
+                                src={imageUrl}
+                                alt={alumno?.nombre ?? 'Alumno'}
+                                width={200}
+                                height={200}
+                                className='object-cover mb-2'
                             />
-                        ) }
+                        )}
 
-                        <button
-                            onClick={() => alumno && handleEliminarImagen(alumno.matricula ?? 0)}
-                            disabled={uploading}
-                            className='underline text-red-600'
-                        >
-                            {uploading ? 'Eliminando...' : 'Eliminar foto'}
-                        </button>
+                        {rol !== 'User' && (
+                            <button
+                                onClick={() => alumno && handleEliminarImagen(alumno.matricula ?? 0)}
+                                disabled={uploading}
+                                className='underline text-red-600'
+                            >
+                                {uploading ? 'Eliminando...' : 'Eliminar foto'}
+                            </button>
+                        )}
                     </div>
                 </div>
             ) : (

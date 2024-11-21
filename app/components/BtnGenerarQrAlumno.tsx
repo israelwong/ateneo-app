@@ -24,11 +24,13 @@ interface Alumno {
 }
 
 interface BtnGenerarQrAlumnoProps {
+    rol?: string;
     alumno: Alumno | undefined;
     onQrGenerated: () => void;
 }
 
-const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGenerated }) => {
+const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ rol, alumno, onQrGenerated }) => {
+
     const [generandoQR, setGenerandoQR] = useState(false);
     const [eliminandoQR, setEliminandoQR] = useState(false);
     const [qrAvailable, setQrAvailable] = useState(false);
@@ -61,7 +63,7 @@ const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGen
             const result_qr_generate = await generarQr(alumno);
             console.log('QR generado:', result_qr_generate);
             const newImageQr = result_qr_generate.url_svg ? `${result_qr_generate.url_svg}?${new Date().getTime()}` : null;
-            const response = await actualizarAlumno(alumno.id, { ...alumno, qr: newImageQr});
+            const response = await actualizarAlumno(alumno.id, { ...alumno, qr: newImageQr });
             console.log('Empleado actualizado:', response);
             setQrAvailable(true);
             onQrGenerated();
@@ -74,7 +76,7 @@ const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGen
 
     return (
         <div className="text-center border p-2">
-            { qrAvailable && alumno?.qr ? (
+            {qrAvailable && alumno?.qr ? (
                 <div className="mb-2">
                     <Image
                         src={alumno.qr}
@@ -83,13 +85,15 @@ const BtnGenerarQrAlumno: React.FC<BtnGenerarQrAlumnoProps> = ({ alumno, onQrGen
                         height={200}
                         className="mx-auto"
                     />
-                    <button
-                        onClick={() => handleEliminarQR(alumno.id)}
-                        className="text-center text-red-500 underline"
-                        disabled={eliminandoQR}
-                    >
-                        {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}
-                    </button>
+                    {rol !== 'User' && (
+                        <button
+                            onClick={() => handleEliminarQR(alumno.id)}
+                            className="text-center text-red-500 underline"
+                            disabled={eliminandoQR}
+                        >
+                            {eliminandoQR ? 'Eliminando...' : 'Eliminar QR'}
+                        </button>
+                    )}
                 </div>
             ) : (
                 <button

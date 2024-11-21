@@ -34,7 +34,8 @@ model User {
   name      String
   email     String   @unique
   password  String
-  status    String   @default("Activo")
+  status    String   @default("Active")
+  role      String   @default("User")
   createdAt DateTime @default(now())
 }
 

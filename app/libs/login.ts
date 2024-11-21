@@ -38,7 +38,8 @@ export default async function authenticateUser(email: string, password: string) 
         const token = jwt.sign(
             {
                 userId: user.id,
-                email: user.email
+                email: user.email,
+                rol: user.role
             },
             secret,
             {
